@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "type": "node-terminal",
+      "name": "Débugger le script : debug",
+      "request": "launch",
+      "command": "pnpm run debug",
+      "cwd": "${workspaceFolder}",
+      "sourceMaps": true,
+      "outputCapture": "std",
+      "outFiles": ["${workspaceRoot}/wab/**/*.js"]
+    },
+
+    {
+      "type": "node-terminal",
+      "name": "Exécuter le script : start",
+      "request": "launch",
+      "command": "pnpm run start",
+      "cwd": "${workspaceFolder}",
+      "sourceMaps": true,
+      "outputCapture": "std",
+      "outFiles": ["${workspaceRoot}/wab/**/*.js"]
+    }
+  ]
+}
