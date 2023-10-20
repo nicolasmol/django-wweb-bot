@@ -1,0 +1,20 @@
+{
+  "configurations": [
+    {
+      "type": "node-terminal",
+      "name": "Débugger le programme entier",
+      "request": "launch",
+      "command": "pnpm run start",
+      "cwd": "${workspaceFolder}",
+      "sourceMaps": true,
+    },
+    {
+      "type": "node-terminal",
+      "name": "Débugger le script courant",
+      "request": "launch",
+      "command": "node -r esm {relativeFile} --inspect",
+      "cwd": "${fileDirname}",
+      "sourceMaps": true,
+    }
+  ]
+}

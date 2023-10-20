@@ -1,18 +1,25 @@
 {
-  "name": "watsapp-web",
+  "name": "django-wab-www",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "wab/index.js",
+  "type": "commonjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "cd wab && tsc",
+    "watch": "cd wab && tsc --watch",
+    "debug": "cd wab && nodemon --exec 'node --require ts-node/register --inspect index.ts'",
+    "clean": "cd wab && pnpm clean",
+    "start": "cd wab && node index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "workspaces": [
+    "wab",
+    "www"
+  ],
   "dependencies": {
-    "puppeteer": "^21.1.0",
-    "qrcode-terminal": "^0.12.0",
-    "whatsapp-web.js": "^1.22.1",
-    "wwebjs-mongo": "^1.1.0"
+    "www": "^0.0.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
   }
 }

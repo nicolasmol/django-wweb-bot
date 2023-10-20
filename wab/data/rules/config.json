@@ -1,0 +1,116 @@
+    {
+        "id": "root",
+        "stopAtFirstMatch": true,
+        "ifNoMatch": {
+            "doBeforeReply": "",
+            "replyMessages": [],
+            "doAfterReply": "",
+            "thenGoToRuleId": ""
+        },
+        "pauseRuleInSeconds": 0,
+        "ifPaused": {
+            "doBeforeReply": "",
+            "replyMessages": [],
+            "doAfterReply": "",
+            "thenGoToRuleId": ""
+        },
+        "rules": [
+            {
+                "id": "menu",
+                "receivedMessageAsRex": "^111$",
+                "stopAtFirstMatch": true,
+                "ifNoMatch": {
+                    "replyMessages": [
+                        "{{SORRY_TRY_AGAIN}}"
+                    ],
+                    "doAfterReply": "checkNewUser",
+                    "thenGoToRuleId": "menu"
+                },
+                "pauseRuleInSeconds": 30,
+                "ifPaused": {
+                    "replyMessages": [
+                        "{{PLEASE_WAIT}} {{menu.pauseRuleInSeconds}} secondes"
+                    ]
+                },
+                "ifMatch": {
+                    "replyMessages": [
+                        "🤖 Faites votre choix:\n\n1️⃣. Comprendre {{APPNAME}}\n2️⃣. Lire les annonces\n3️⃣. Modifier mes annonces\n\n"
+                    ]
+                },
+                "rules": [
+                    {
+                        "id": "understandApp",
+                        "receivedMessageAsRex": "^1$",
+                        "ifMatch": {
+                            "replyMessages": [
+                                "{{APPNAME}}\n\n{{APPNAME}} est une application de petites annonces gratuites, etc..."
+                            ],
+                            "thenGoToRuleId": "menu"
+                        }
+                    },
+                    {
+                        "id": "read",
+                        "receivedMessageAsRex": "^2$",
+                        "ifMatch": {
+                            "doBeforeReply": "getLastAdsList",
+                            "replyMessages": [
+                                "Voici les dernières annonces:\n\n{{ADSLIST}}"
+                            ],
+                            "thenGoToRuleId": "root"
+                        }
+                    },
+                    {
+                        "id": "edit",
+                        "receivedMessageAsRex": "^3$",
+                        "ifMatch": {
+                            "replyMessages": [
+                                "🤖 Faites votre choix:\n\n1️⃣. Ajouter une annonce\n2️⃣. Supprimer une annonce\n3️⃣. Modifier une annonce"
+                            ]
+                        },
+                        "rules": [
+                            {
+                                "id": "add",
+                                "receivedMessageAsRex": "^1$",
+                                "ifMatch": {
+                                    "replyMessages": [
+                                        "🤖 Envoyez moi le texte de votre annonce"
+                                    ],
+                                    "thenGoToRuleId": "menu"
+                                }
+                            },
+                            {
+                                "id": "delete",
+                                "receivedMessageAsRex": "^2$",
+                                "ifMatch": {
+                                    "replyMessages": [
+                                        "🤖 Envoyez moi le numéro de l'annonce à supprimer"
+                                    ],
+                                    "thenGoToRuleId": "menu"
+                                }
+                            },
+                            {
+                                "id": "modify",
+                                "receivedMessageAsRex": "^3$",
+                                "ifMatch": {
+                                    "replyMessages": [
+                                        "🤖 Envoyez moi le numéro de l'annonce à modifier"
+                                    ],
+                                    "thenGoToRuleId": "menu"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "help",
+                "receivedMessageAsRex": "^777",
+                "ifMatch": {
+                    "replyMessages": [
+                        "Pour avoir de l'aide, utilisez le lein ci-après",
+                        "{{HELP_LINK}}"
+                    ]
+                }
+            }
+        ]
+    }

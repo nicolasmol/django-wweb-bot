@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ESNext",
+    "outDir": ".",
+    "sourceMap": true,
+    "rootDir": ".",
+    /*"composite": true,*/
+    "paths": {
+      "@/*": ["./*"],
+    },
+  }
+}

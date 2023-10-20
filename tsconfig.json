@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ESNext",
+    "outDir": ".",
+    "sourceMap": true,
+    "rootDir": ".",
+  },
+  /*"references": [
+    {"path": "./wab"}
+  ],*/
+  "exclude": [
+    "node_modules",
+    "./node_modules",
+    "./node_modules/*",
+    "./node_modules/@types/node/index.d.ts",
+    "www/**/*"
+  ]
+}
