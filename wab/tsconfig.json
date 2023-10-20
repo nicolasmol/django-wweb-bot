@@ -1,14 +1,15 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "NodeNext",
     "target": "ESNext",
-    "outDir": ".",
-    "sourceMap": true,
-    "rootDir": ".",
-    /*"composite": true,*/
-    "paths": {
-      "@/*": ["./*"],
-    },
-  }
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "baseUrl": "./"
+  },
+  "include": ["./**/*.ts"]
 }

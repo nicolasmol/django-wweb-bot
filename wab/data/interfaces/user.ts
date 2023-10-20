@@ -2,9 +2,9 @@ interface IUserProperties {
   phoneId: string;
   adDate?: Date;
   adText?: string;
-  likesCount?: number;
-  dislikesCount?: number;
-  anonymeId?: string;
+  likesCount: number;
+  dislikesCount: number;
+  anonymeId: string;
   membershipType?: string;
   membershipExpirationDate?: Date;
   setAdLeftCount?: number;

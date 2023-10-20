@@ -139,3 +139,4 @@ pnpm-lock.yaml
 **.data.json
 **.node-persist**
 # end managed by open-wa
+.idea

@@ -6,7 +6,7 @@
     "mongoose": "^7.6.1",
     "puppeteer": "^21.3.8",
     "qrcode-terminal": "^0.12.0",
-    "whatsapp-web.js": "github:alechkos/whatsapp-web.js#forward-with-caption"
+    "whatsapp-web.js": "1.22.1"
   },
   "description": "",
   "devDependencies": {
@@ -15,20 +15,17 @@
     "@typescript-eslint/parser": "^6.7.5",
     "dotenv": "^16.3.1",
     "esm": "^3.2.25",
-    "tsc-watch": "^6.0.4",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.2.2"
   },
   "keywords": [],
   "license": "ISC",
-  "main": "index.js",
+  "main": "index.ts",
   "name": "django-wab",
   "scripts": {
-    "build": "tsc --build",
-    "clean": "find -type d -name node_modules -prune -o -type f \\( -name \"*.js\" -o -name \"*.js.map\" \\) -exec bash -c 'file=\"{}\"; tsfile=\"${file%.js*}.ts\"; [ ! -f \"$tsfile\" ] && echo \"Suppression de $file\" && rm \"$file\"' \\;",
-    "debug": "nodemon --exec 'node --require ts-node/register --inspect index.ts'",
-    "start": "node index.js",
-    "vscode:prepublish": "",
-    "watch": "tsc --watch"
+    "debug": "nodemon --exec ts-node -r tsconfig-paths/register --ext ts --ext env index.ts --ignore lib/",
+    "start": "ts-node -r tsconfig-paths/register index.ts",
+    "watch": "tsc --watch --noEmit --project ./tsconfig.json"
   },
   "type": "commonjs",
   "version": "1.0.0"

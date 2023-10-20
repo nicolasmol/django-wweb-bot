@@ -1,6 +1,11 @@
 import axios from "axios";
-import Config from "@/core/config";
+import Config from "core/config";
 
+/**
+ * Vérifie si un texte d'annonce est valide.
+ * @returns Une valeur booléenne ou un objet contenant un message d'erreur.
+ * @param messages le texte à analyser
+ */
 async function getChatGPTresponse(messages: { role: string; content: any }[]) {
   const options = {
     method: "post",
@@ -16,8 +21,7 @@ async function getChatGPTresponse(messages: { role: string; content: any }[]) {
   };
 
   try {
-    const response = await axios(options);
-    return response;
+    return await axios(options);
   } catch (error) {
     console.error(error);
     return null;

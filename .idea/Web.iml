@@ -5,8 +5,13 @@
       <excludeFolder url="file://$MODULE_DIR$/.tmp" />
       <excludeFolder url="file://$MODULE_DIR$/temp" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/wab/.wwebjs_auth" />
+      <excludeFolder url="file://$MODULE_DIR$/wab/.wwebjs_cache" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="SonarLintModuleSettings">
+    <option name="uniqueId" value="72d89ad4-7b22-41e1-a54f-26b2eeb76bb0" />
   </component>
 </module>

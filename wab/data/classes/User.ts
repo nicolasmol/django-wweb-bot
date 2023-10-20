@@ -1,96 +1,142 @@
 import mongoose from "mongoose";
-import { UserModel } from "@/data/models/user";
-import { IUser, IUserProperties } from "@/data/interfaces/user";
+import { UserModel } from "database/models/user";
+import { IUser, IUserProperties } from "data/interfaces/user";
+import { generateRandomLetters } from "utils/utils";
 
+/**
+ * Classe User pour gérer les utilisateurs.
+ * @remarks
+ * Cette classe est un singleton.
+ * Elle permet de gérer les utilisateurs.
+ *
+ */
 export class User implements IUserProperties {
-  public phoneId: string;
-  public userChats?: {
-    chatName: string;
-    isGroup: boolean;
-    activeRuleId: string;
-    pausedRuleTimeoutUnixTs: number;
-  }[];
+    public phoneId: string;
+    public likesCount: number;
+    public dislikesCount: number;
+    public anonymeId: string;
+    public userChats?: {
+        chatName: string;
+        isGroup: boolean;
+        activeRuleId: string;
+        pausedRuleTimeoutUnixTs: number;
+    }[];
 
-  private _adDate?: Date;
-  private _adText?: string;
-  private _likesCount?: number;
-  private _dislikesCount?: number;
-  private _anonymeId?: string;
-  private _membershipType?: string;
-  private _membershipExpirationDate?: Date;
-  private _setAdLeftCount?: number;
-  private _getAdLeftCount?: number;
-  private _anonymousMsgLeftCount?: number;
-  private _chatGPptUserHistory?: {
+    #adText?: string;
+    #setAdLeftCount: number;
+    /*   
+  #adDate?: Date;
+  #membershipType?: string;
+  #membershipExpirationDate?: Date;
+  #getAdLeftCount?: number;
+  #anonymousMsgLeftCount?: number;
+  #chatGPptUserHistory?: {
     userMessage: string;
     chatGPTresponse: string;
-  }[];
+  }[]; 
+  */
 
-  private _doc: mongoose.Document & IUser;
+    #doc: mongoose.Document & IUser;
 
-  //~> Constructor
-  constructor(phoneId: string) {
-    this.phoneId = phoneId;
-  }
-
-  //{ Public methods }
-  public static async createUser(phoneId: string): Promise<User> {
-    let user = new User(phoneId);
-    await user._initialize();
-    return user;
-  }
-
-  //# Private methods
-  private async _initialize(): Promise<void> {
-    this._doc = await UserModel.findOne({ phoneId: this.phoneId });
-    if (this._doc) {
-      this._adDate = this._doc.adDate;
-      this._adText = this._doc.adText;
-      this._likesCount = this._doc.likesCount;
-      this._dislikesCount = this._doc.dislikesCount;
-      this._anonymeId = this._doc.anonymeId;
-      this._membershipType = this._doc.membershipType;
-      this._membershipExpirationDate = this._doc.membershipExpirationDate;
-      this._setAdLeftCount = this._doc.setAdLeftCount;
-      this._getAdLeftCount = this._doc.getAdLeftCount;
-      this._anonymousMsgLeftCount = this._doc.anonymousMsgLeftCount;
-      this._chatGPptUserHistory = this._doc.chatGPptUserHistory;
-      this.userChats = this._doc.userChats;
-    } else {
-      this._doc = await UserModel.create({
-        phoneId: this.phoneId,
-        anonymeId: this._generateAnonymeId(),
-      });
+    //~> Constructor
+    /**
+     * Crée un utilisateur.
+     * @param phoneId - L'identifiant de téléphone.
+     */
+    private constructor(phoneId: string) {
+        this.phoneId = phoneId;
+        this.likesCount = 0;
+        this.dislikesCount = 0;
+        this.anonymeId = "";
+        this.#setAdLeftCount = -1;
+        this.#doc = {} as mongoose.Document & IUser;
     }
-  }
 
-  private _generateAnonymeId(): void {
-    this._anonymeId = this.phoneId.slice(0, -4) + generateRandomLetters;
-  }
-
-  //<-- Setters
-  public set adText(adText: string) {
-    if (this._setAdLeftCount > 0) {
-      this._adText = adText;
-      this._setAdLeftCount--;
-      this._doc.updateOne({
-        adText: this._adText,
-        setAdLeftCount: this._setAdLeftCount,
-      });
+    //{ Public methods }
+    /**
+     * Crée un utilisateur.
+     * @param phoneId - L'identifiant de téléphone.
+     * @returns Une promesse.
+     * @remarks
+     * Crée un utilisateur à partir de l'identifiant de téléphone.
+     */
+    public static async get(phoneId: string): Promise<User> {
+        let user = new User(phoneId);
+        await user._initialize();
+        return user;
     }
-  }
 
-  //--> Getters
-  public get adText(): string {
-    return this._adText;
-  }
-  public get anonymeId(): string {
-    return this._anonymeId;
-  }
-  public get likesCount(): number {
-    return this._likesCount;
-  }
-  public get dislikesCount(): number {
-    return this._dislikesCount;
-  }
+    //# Private methods
+    /**
+     * Initialise l'utilisateur.
+     * @returns Une promesse.
+     * @remarks
+     * Initialise l'utilisateur à partir de la base de données.
+     * Si l'utilisateur n'existe pas, le crée.
+     * Si l'utilisateur n'a pas d'identifiant anonyme, le génère.
+     */
+    private async _initialize(): Promise<void> {
+        let doc = await UserModel.findOne({ phoneId: this.phoneId });
+        if (doc) {
+            this.#doc = doc;
+            //this.#adDate = this.#doc.adDate;
+            this.#adText = this.#doc.adText;
+            this.likesCount = this.#doc.likesCount;
+            this.dislikesCount = this.#doc.dislikesCount;
+            this.anonymeId = this.#doc.anonymeId;
+            //this.#membershipType = this.#doc.membershipType;
+            //this.#membershipExpirationDate = this.#doc.membershipExpirationDate;
+            //this.#setAdLeftCount = this.#doc.setAdLeftCount ?? -1;
+            //this.#getAdLeftCount = this.#doc.getAdLeftCount;
+            //this.#anonymousMsgLeftCount = this.#doc.anonymousMsgLeftCount;
+            //this.#chatGPptUserHistory = this.#doc.chatGPptUserHistory;
+            this.userChats = this.#doc.userChats;
+        } else {
+            let doc = await UserModel.create({
+                phoneId: this.phoneId,
+                anonymeId: this._generateAnonymeId(),
+            });
+            this.#doc = doc;
+        }
+    }
+
+    /**
+     * Génère un identifiant anonyme.
+     * @returns L'identifiant anonyme.
+     * @remarks
+     * L'identifiant anonyme est généré à partir de l'identifiant de téléphone.
+     */
+    private _generateAnonymeId(): void {
+        this.anonymeId = this.phoneId.slice(0, -4) + generateRandomLetters(4);
+    }
+
+    //<-- Setters
+    /**
+     * Définit le texte de l'annonce.
+     * @param adText - Le texte de l'annonce.
+     * @remarks
+     * Si l'utilisateur n'a pas d'annonce, la définit.
+     */
+    public set adText(adText: string) {
+        if (this.#setAdLeftCount != 0) {
+            this.#adText = adText;
+            this.#setAdLeftCount--;
+            this.#doc.updateOne({
+                adText: this.#adText,
+                setAdLeftCount: this.#setAdLeftCount,
+            });
+        }
+    }
+
+    //--> Getters
+    /**
+     * Retourne le texte de l'annonce.
+     * @returns Le texte de l'annonce.
+     * @remarks
+     * Si l'utilisateur n'a pas d'annonce, retourne undefined.
+     */
+
+    public get adText(): string | undefined {
+        return this.#adText;
+    }
 }

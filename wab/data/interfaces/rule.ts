@@ -1,6 +1,6 @@
 interface IRule {
   id: string;
-  receivedMessageAsRex: string | RegExp; //Allow for RegExp objects
+  receivedMessageAsRex: string;
   stopAtFirstMatch?: boolean;
   ifNoMatch?: IRuleAction;
   pauseRuleInSeconds?: number;

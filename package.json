@@ -5,11 +5,10 @@
   "main": "wab/index.js",
   "type": "commonjs",
   "scripts": {
-    "build": "cd wab && tsc",
-    "watch": "cd wab && tsc --watch",
-    "debug": "cd wab && nodemon --exec 'node --require ts-node/register --inspect index.ts'",
-    "clean": "cd wab && pnpm clean",
-    "start": "cd wab && node index.js"
+    "debug": "cd wab && pnpm debug",
+    "watch": "cd wab && pnpm watch",
+    "start": "cd wab && pnpm start"
+
   },
   "workspaces": [
     "wab",

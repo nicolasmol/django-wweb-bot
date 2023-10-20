@@ -1,11 +1,13 @@
 function generateRandomLetters(length: number) {
-  var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  var result = "";
+  let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let result = "";
 
-  for (var i = 0; i < length; i++) {
-    var randomIndex = Math.floor(Math.random() * letters.length);
+  for (let i = 0; i < length; i++) {
+    let randomIndex = Math.floor(Math.random() * letters.length);
     result += letters.charAt(randomIndex);
   }
 
   return result;
 }
+
+export { generateRandomLetters };

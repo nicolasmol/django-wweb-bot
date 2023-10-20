@@ -1,3 +1,8 @@
+/**
+ * Returns a copy of the original object with the replacements applied.
+ * @param original The original object.
+ * @param replacements The replacements.
+ */
 function copyObjectWithReplacements<T>(
   original: T,
   replacements: Partial<T>
@@ -8,8 +13,18 @@ function copyObjectWithReplacements<T>(
   };
 }
 
-function isValidId(id: string): boolean {
-  return typeof id === "string" && /^[A-Za-z0-9_]+$/.test(id);
+/**
+ * Returns the nested object.
+ * @param obj The object.
+ * @param pathArr The path array.
+ * @returns The nested object.
+ */
+function getNestedObject(obj: { [x: string]: any }, pathArr: string | any[]) {
+  for (const element of pathArr) {
+    if (!obj[element]) obj[element] = {};
+    obj = obj[element];
+  }
+  return obj;
 }
 
-export { copyObjectWithReplacements, isValidId };
+export { copyObjectWithReplacements, getNestedObject };

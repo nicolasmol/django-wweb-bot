@@ -7,5 +7,6 @@
         <option value="DIRECTORY:www" />
       </list>
     </option>
+    <option name="verboseEnabled" value="true" />
   </component>
 </project>
