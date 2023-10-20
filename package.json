@@ -1,5 +1,6 @@
 {
   "name": "django-wab-www",
+  "name": "django-wab-www",
   "version": "1.0.0",
   "description": "",
   "main": "wab/index.js",
