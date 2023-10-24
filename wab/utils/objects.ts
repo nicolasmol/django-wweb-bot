@@ -19,7 +19,7 @@ function copyObjectWithReplacements<T>(
  * @param pathArr The path array.
  * @returns The nested object.
  */
-function getNestedObject(obj: { [x: string]: any }, pathArr: string | any[]) {
+function getNestedObject(obj: { [x: string]: any }, pathArr: any[]) {
   for (const element of pathArr) {
     if (!obj[element]) obj[element] = {};
     obj = obj[element];

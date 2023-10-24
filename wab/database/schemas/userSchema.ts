@@ -13,12 +13,12 @@ const userSchema = new mongoose.Schema({
     getAdLeftCount: Number,
     anonymousMsgLeftCount: Number,
     chatGPptUserHistory: [{ userMessage: String, chatGPTresponse: String }],
-    userChats: [
+    chats: [
         {
-            chatName: String,
+            id: String,
             isGroup: Boolean,
             activeRuleId: String,
-            pausedRuleTimeoutUnixTs: Number,
+            pausedRulesInUnixTs: [[String, Number]],
         },
     ],
 });

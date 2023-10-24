@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { UserModel } from "database/models/user";
-import { IUser, IUserProperties } from "data/interfaces/user";
+import { UserModel } from "database/models/userModel";
+import { IUser, IUserChat, IUserProperties } from "data/interfaces/userInterface";
 import { generateRandomLetters } from "utils/utils";
 
 /**
@@ -15,12 +15,9 @@ export class User implements IUserProperties {
     public likesCount: number;
     public dislikesCount: number;
     public anonymeId: string;
-    public userChats?: {
-        chatName: string;
-        isGroup: boolean;
-        activeRuleId: string;
-        pausedRuleTimeoutUnixTs: number;
-    }[];
+    public chats?: IUserChat[];
+
+    //# Private properties
 
     #adText?: string;
     #setAdLeftCount: number;
@@ -38,6 +35,8 @@ export class User implements IUserProperties {
 
     #doc: mongoose.Document & IUser;
 
+    private currentChat: any;
+
     //~> Constructor
     /**
      * Crée un utilisateur.
@@ -52,7 +51,8 @@ export class User implements IUserProperties {
         this.#doc = {} as mongoose.Document & IUser;
     }
 
-    //{ Public methods }
+    //--> Getters
+
     /**
      * Crée un utilisateur.
      * @param phoneId - L'identifiant de téléphone.
@@ -64,6 +64,51 @@ export class User implements IUserProperties {
         let user = new User(phoneId);
         await user._initialize();
         return user;
+    }
+
+    /**
+     * Retourne le texte de l'annonce.
+     * @returns Le texte de l'annonce.
+     * @remarks
+     * Si l'utilisateur n'a pas d'annonce, retourne undefined.
+     */
+    public get adText(): string | undefined {
+        return this.#adText;
+    }
+
+    public getOrSetActiveChat(chatId: string, isGroup: boolean): Promise<IUserChat> {
+        this.currentChat = this.#doc.getOrSetChat(chatId, isGroup);
+        return this.currentChat;
+    }
+
+    public isTargetRulePaused(ruleId: string): boolean {
+        return this.currentChat.pausedRulesInUnixTs[ruleId] > Date.now();
+    }
+
+    //<-- Setters
+    /**
+     * Définit le texte de l'annonce.
+     * @param adText - Le texte de l'annonce.
+     * @remarks
+     * Si l'utilisateur n'a pas d'annonce, la définit.
+     */
+    public set adText(adText: string) {
+        if (this.#setAdLeftCount != 0) {
+            this.#adText = adText;
+            this.#setAdLeftCount = (this.#setAdLeftCount ?? 0) - 1;
+            this.#doc.updateOne({
+                adText: this.#adText,
+                setAdLeftCount: this.#setAdLeftCount,
+            });
+        }
+    }
+
+    public setRulePauseInUnixTs(ruleId: string, pauseSec: number): void {
+        this.#doc.updateChatPausedRulesInUnixTs(this.currentChat.id, ruleId, Date.now() + pauseSec * 1000);
+    }
+
+    public setActivateRule(ruleId: string): void {
+        this.#doc.updateChatActiveRuleId(this.currentChat.id, ruleId);
     }
 
     //# Private methods
@@ -90,7 +135,7 @@ export class User implements IUserProperties {
             //this.#getAdLeftCount = this.#doc.getAdLeftCount;
             //this.#anonymousMsgLeftCount = this.#doc.anonymousMsgLeftCount;
             //this.#chatGPptUserHistory = this.#doc.chatGPptUserHistory;
-            this.userChats = this.#doc.userChats;
+            this.chats = this.#doc.chats;
         } else {
             let doc = await UserModel.create({
                 phoneId: this.phoneId,
@@ -108,35 +153,5 @@ export class User implements IUserProperties {
      */
     private _generateAnonymeId(): void {
         this.anonymeId = this.phoneId.slice(0, -4) + generateRandomLetters(4);
-    }
-
-    //<-- Setters
-    /**
-     * Définit le texte de l'annonce.
-     * @param adText - Le texte de l'annonce.
-     * @remarks
-     * Si l'utilisateur n'a pas d'annonce, la définit.
-     */
-    public set adText(adText: string) {
-        if (this.#setAdLeftCount != 0) {
-            this.#adText = adText;
-            this.#setAdLeftCount--;
-            this.#doc.updateOne({
-                adText: this.#adText,
-                setAdLeftCount: this.#setAdLeftCount,
-            });
-        }
-    }
-
-    //--> Getters
-    /**
-     * Retourne le texte de l'annonce.
-     * @returns Le texte de l'annonce.
-     * @remarks
-     * Si l'utilisateur n'a pas d'annonce, retourne undefined.
-     */
-
-    public get adText(): string | undefined {
-        return this.#adText;
     }
 }

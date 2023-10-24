@@ -45,19 +45,12 @@ export const client = () => _client;
     /* ------------------------------------------------------------------------ */
     _client.on("ready", async () => {
         console.log("Bot is ready!");
-        console.log(
-            "Whatsapp-Web Version : " + (await _client.getWWebVersion())
-        );
-        await _client.sendMessage(
-            Config.owner,
-            "Djo Whatsapp-Bot is ready to use"
-        );
+        console.log("Whatsapp-Web Version : " + (await _client.getWWebVersion()));
+        await _client.sendMessage(Config.owner, "Djo Whatsapp-Bot is ready to use");
 
         /* ------------------------ Get Anonyme Ads Group ----------------------- */
         _client.getChats().then((chats) => {
-            Globs.anonymeAdsGroup = chats.find(
-                (chat) => chat.name === Config.anonymeAdsGroupName
-            );
+            Globs.anonymeAdsGroup = chats.find((chat) => chat.name === Config.anonymeAdsGroupName);
             if (Globs.anonymeAdsGroup) {
                 console.log("Anonyme Ads Group found");
             }
@@ -66,8 +59,8 @@ export const client = () => _client;
         Rules.loadRulesFromJSON("./data/rules.json", true);
     });
 
-    _client.on("message", async (msg) => {
-        console.log("Received message:", msg.body);
-        await handler(msg);
+    _client.on("message", async (Msg) => {
+        console.log("Received message:", Msg.body);
+        await handler(Msg);
     });
 })();
