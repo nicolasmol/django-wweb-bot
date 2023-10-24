@@ -33,9 +33,7 @@ export class User implements IUserProperties {
   }[]; 
   */
 
-    #doc: mongoose.Document & IUser;
-
-    private currentChat: any;
+    doc: mongoose.Document & IUser;
 
     //~> Constructor
     /**
@@ -48,7 +46,7 @@ export class User implements IUserProperties {
         this.dislikesCount = 0;
         this.anonymeId = "";
         this.#setAdLeftCount = -1;
-        this.#doc = {} as mongoose.Document & IUser;
+        this.doc = {} as mongoose.Document & IUser;
     }
 
     //--> Getters
@@ -76,15 +74,6 @@ export class User implements IUserProperties {
         return this.#adText;
     }
 
-    public getOrSetActiveChat(chatId: string, isGroup: boolean): Promise<IUserChat> {
-        this.currentChat = this.#doc.getOrSetChat(chatId, isGroup);
-        return this.currentChat;
-    }
-
-    public isTargetRulePaused(ruleId: string): boolean {
-        return this.currentChat.pausedRulesInUnixTs[ruleId] > Date.now();
-    }
-
     //<-- Setters
     /**
      * Définit le texte de l'annonce.
@@ -96,19 +85,11 @@ export class User implements IUserProperties {
         if (this.#setAdLeftCount != 0) {
             this.#adText = adText;
             this.#setAdLeftCount = (this.#setAdLeftCount ?? 0) - 1;
-            this.#doc.updateOne({
+            this.doc.updateOne({
                 adText: this.#adText,
                 setAdLeftCount: this.#setAdLeftCount,
             });
         }
-    }
-
-    public setRulePauseInUnixTs(ruleId: string, pauseSec: number): void {
-        this.#doc.updateChatPausedRulesInUnixTs(this.currentChat.id, ruleId, Date.now() + pauseSec * 1000);
-    }
-
-    public setActivateRule(ruleId: string): void {
-        this.#doc.updateChatActiveRuleId(this.currentChat.id, ruleId);
     }
 
     //# Private methods
@@ -123,25 +104,25 @@ export class User implements IUserProperties {
     private async _initialize(): Promise<void> {
         let doc = await UserModel.findOne({ phoneId: this.phoneId });
         if (doc) {
-            this.#doc = doc;
+            this.doc = doc;
             //this.#adDate = this.#doc.adDate;
-            this.#adText = this.#doc.adText;
-            this.likesCount = this.#doc.likesCount;
-            this.dislikesCount = this.#doc.dislikesCount;
-            this.anonymeId = this.#doc.anonymeId;
+            this.#adText = this.doc.adText;
+            this.likesCount = this.doc.likesCount;
+            this.dislikesCount = this.doc.dislikesCount;
+            this.anonymeId = this.doc.anonymeId;
             //this.#membershipType = this.#doc.membershipType;
             //this.#membershipExpirationDate = this.#doc.membershipExpirationDate;
             //this.#setAdLeftCount = this.#doc.setAdLeftCount ?? -1;
             //this.#getAdLeftCount = this.#doc.getAdLeftCount;
             //this.#anonymousMsgLeftCount = this.#doc.anonymousMsgLeftCount;
             //this.#chatGPptUserHistory = this.#doc.chatGPptUserHistory;
-            this.chats = this.#doc.chats;
+            this.chats = this.doc.chats;
         } else {
             let doc = await UserModel.create({
                 phoneId: this.phoneId,
                 anonymeId: this._generateAnonymeId(),
             });
-            this.#doc = doc;
+            this.doc = doc;
         }
     }
 
