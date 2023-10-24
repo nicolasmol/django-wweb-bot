@@ -5,21 +5,14 @@ import { Globs, Str } from "core/globals";
 import Rules from "data/classes/Rules";
 import WAWebJS = require("whatsapp-web.js");
 import { IRuleAction, IRule } from "data/interfaces/ruleInterface";
-import { IUserChat } from "data/interfaces/userInterface";
 
 /**
- * The `export default async function handler(Msg: WAWebJS.Message) {` is exporting a default asynchronous function called
- * `handler`. This function takes a parameter `Msg` of type `WAWebJS.Message`. It is used to handle incoming messages in a
- * chat application. The function is marked as `async` because it uses `await` to handle asynchronous operations.
- *
- * @async
- * @function
- * @name handler
- * @kind function
- * @param {WAWebJS.Message} Msg
- * @returns {Promise<void>}
- * @exports
- */
+ * Fonction principale du bot.
+ * @param Msg - Le message WhatsApp reçu.
+ * @remarks
+ * Fonction principale du bot.
+ * Elle est appelée à chaque fois qu'un message est reçu.
+ * */
 export default async function handler(Msg: WAWebJS.Message): Promise<void> {
     try {
         let user = await User.get(Msg.from);
@@ -70,15 +63,13 @@ export default async function handler(Msg: WAWebJS.Message): Promise<void> {
 }
 
 /**
- * The `executeRuleAction` function is an asynchronous function that takes an object as a parameter. This object contains
- * properties such as `targetRule`, `ruleAction`, `Msg`, and `user`.
- *
- * @async
- * @function
- * @name executeRuleAction
- * @kind function
- * @param {{ targetRule?: IRule | undefined ruleAction: IRuleAction Msg: WAWebJS.Message user: User }} { targetRule, ruleAction, Msg, user, }
- * @returns {Promise<void>}
+ * Exécute une action de règle.
+ * @param targetRule - La règle cible.
+ * @param ruleAction - L'action de règle à exécuter.
+ * @param Msg - Le message WhatsApp reçu.
+ * @param user - L'utilisateur associé au message.
+ * @remarks
+ * Exécute une action de règle.
  */
 async function executeRuleAction({
     targetRule,
@@ -116,23 +107,16 @@ async function executeRuleAction({
 }
 
 /**
- * The `executeModule` function is an asynchronous function that takes four parameters: `command`, `Msg`, `user`, and
- * `replies`.
- *
- * @async
- * @function
- * @name executeModule
- * @kind function
- * @param {string} command
- * @param {WAWebJS.Message} Msg
- * @param {User} user
- * @param {string[]} replies?
- * @returns {Promise<void>}
+ * Exécute un module.
+ * @param command - La commande à exécuter.
+ * @param Msg - Le message WhatsApp reçu.
+ * @param user - L'utilisateur associé au message.
+ * @param replies - Les réponses déjà envoyées.
  */
 async function executeModule(command: string, Msg: WAWebJS.Message, user: User, replies?: string[]): Promise<void> {
     let [moduleName, functionName] = command.split(".");
 
-    let module = Globs.findModuleValue(moduleName);
+    let module = Globs.getModule(moduleName);
     if (module && !module.disabled) {
         if (functionName) {
             if (module[functionName]) {

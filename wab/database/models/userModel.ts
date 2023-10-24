@@ -21,10 +21,10 @@ const methods = {
             await this.updateOne({ chats: this.chats }).exec();
         }
     },
-    async updateChatActiveRuleId(this: mongoose.Document & IUser, chatId: string, ruleId: string): Promise<void> {
+    async updateChatActiveRuleId(this: mongoose.Document & IUser, chatId: string, ruleId?: string): Promise<void> {
         let chat = this.chats?.find((c) => c.id === chatId);
         if (chat) {
-            chat.activeRuleId = ruleId;
+            chat.activeRuleId = ruleId || "root";
             await this.updateOne({ chats: this.chats }).exec();
         }
     },
@@ -34,7 +34,7 @@ const methods = {
             chat = {
                 id: chatId,
                 isGroup,
-                activeRuleId: "",
+                activeRuleId: "root",
                 pausedRulesInUnixTs: {},
             };
             this.chats?.push(chat);

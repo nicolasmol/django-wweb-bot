@@ -13,7 +13,7 @@ interface Globals {
             ads: typeof Ad;
         };
     };
-    findModuleValue(module: string): any | undefined;
+    getModule(module: string): any | undefined;
 }
 
 export const Globs: Globals = {
@@ -23,7 +23,7 @@ export const Globs: Globals = {
             ads: Ad,
         },
     },
-    findModuleValue(module: string): any | undefined {
+    getModule(module: string): any | undefined {
         function searchInObject(obj: any): any | undefined {
             if (obj && typeof obj === "object") {
                 if (obj.hasOwnProperty(module)) {
